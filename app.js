@@ -1,11 +1,12 @@
 const express = require("express");
 const app = express();
-const { getCategories } = require("./controllers");
+const { getCategories, getCommentsByReviewId } = require("./controllers");
 
 app.use(express.json());
 
 app.get("/api/categories", getCategories);
 
+app.get("/api/reviews/:review_id/comments", getCommentsByReviewId);
 
 app.use((err, req, res, next) => {
   if (err.msg !== undefined) {
