@@ -173,11 +173,8 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(body.msg).toBe("Bad Request");
       });
   });
-  test.only("status:400, responds with an error message when username isn't valid", () => {
-    const newComment = {
-      username: "philippaclaire",
-      body: "cool game 10/10",
-    };
+  test.only("status:400, responds with an error message when body has no properties", () => {
+    const newComment = {};
     return request(app)
       .post("/api/reviews/6/comments")
       .send(newComment)
