@@ -53,12 +53,7 @@ describe("GET /api/reviews/:review_id", () => {
       .get("/api/reviews/2")
       .expect(200)
       .then(({ body }) => {
-        expect(body).toBeInstanceOf(Object);
-        expect(Object.keys(body)).toEqual(["review"]);
-
         const { review } = body;
-        expect(review).toBeInstanceOf(Object);
-
         expect(review).toMatchObject(expected);
       });
   });
@@ -67,7 +62,7 @@ describe("GET /api/reviews/:review_id", () => {
       .get('/api/reviews/55')
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe('No review found for review_id: 55');
+        expect(body.msg).toBe('ID not found');
       });
   });
   test('status:400, responds with an error message when passed a bad review ID', () => {

@@ -18,7 +18,7 @@ exports.getReviewById = (req, res, next) => {
       if (review === undefined) {
         return Promise.reject({
           status: 404,
-          msg: `No review found for review_id: ${review_id}`,
+          msg: `ID not found`,
         });
       } else {
         res.status(200).send({ review });
