@@ -6,6 +6,7 @@ app.use(express.json());
 
 app.get("/api/categories", getCategories);
 app.get("/api/reviews", getReviews);
+
 app.use((err, req, res, next) => {
   if (err.msg !== undefined) {
     res.status(err.status).send({ msg: err.msg });
@@ -14,8 +15,9 @@ app.use((err, req, res, next) => {
   }
 });
 app.use((err, req, res, next) => {
-  console.log(err);
-  res.sendStatus(500);
+  if (err.code === "22P02") {
+    res.status(400).send({ msg: "Bad Request" });
+  } else res.status(500).send({ msg: "Internal Server Error" });
 });
 
 module.exports = app;

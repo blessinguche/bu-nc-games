@@ -10,13 +10,10 @@ exports.getCategories = (req, res) => {
     });
 };
 
-exports.getReviews = (req, res) => {
+exports.getReviews = (req, res, next) => {
   selectReviews()
     .then((reviews) => {
       res.status(200).send({ reviews });
     })
-    .catch((err, next) => {
-      console.log(err);
-      next();
-    });
+    .catch(next);
 };
