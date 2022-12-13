@@ -20,3 +20,9 @@ exports.selectReviewById = (review_id) => {
     .query(`SELECT * FROM reviews WHERE review_id = $1`, [review_id])
     .then((result) => result.rows[0]);
 };
+
+exports.selectCommentsByReviewId = (review_id) => {
+  const query = `SELECT * FROM comments
+  WHERE review_id = $1 ORDER BY created_at DESC;`;
+  return db.query(query, [review_id]).then((result) => result.rows);
+};

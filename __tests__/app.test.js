@@ -98,3 +98,43 @@ describe("GET /api/reviews", () => {
       });
   });
 });
+
+describe("GET /api/reviews/:review_id/comments", () => {
+  test("returns an array of category objects, with slug and description properties", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toHaveLength(3);
+
+        comments.forEach((comment) => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              body: expect.any(String),
+              author: expect.any(String),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              review_id: 2,
+            })
+          );
+        });
+      });
+  });
+  test('status:404, responds with an error message when passed a review ID that doesnt exist', () => {
+    return request(app)
+      .get('/api/reviews/678788/comments')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('ID not found');
+      });
+  });
+  test('status:400, responds with an error message when passed a bad review ID', () => {
+    return request(app)
+      .get('/api/reviews/ihgy/comments')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request');
+      });
+  });
+});
