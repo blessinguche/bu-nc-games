@@ -4,12 +4,6 @@ const db = require("../db/connection");
 exports.selectCategories = () => {
   return db.query("SELECT * FROM categories;").then((result) => result.rows);
 };
-exports.selectReviewById = (review_id) => {
-  return db
-    .query(`SELECT * FROM reviews WHERE review_id = $1`, [review_id])
-    .then((result) => result.rows[0]);
-};
-
 exports.selectReviews = () => {
     const query = `
     SELECT reviews.*, COUNT(comments.review_id)::INT AS comment_count
@@ -18,6 +12,11 @@ exports.selectReviews = () => {
     GROUP BY reviews.review_id
     ORDER BY reviews.created_at DESC;`
     return db.query(query)
-    .then((result) => {return result.rows})
+    .then((result) => result.rows)
     
-}
+};
+exports.selectReviewById = (review_id) => {
+  return db
+    .query(`SELECT * FROM reviews WHERE review_id = $1`, [review_id])
+    .then((result) => result.rows[0]);
+};
