@@ -24,3 +24,11 @@ exports.selectCommentsByReviewId = (review_id) => {
   WHERE review_id = $1 ORDER BY created_at DESC;`;
   return db.query(query, [review_id]).then((result) => result.rows);
 };
+exports.updateReviewById = (review_id, votesChange) => {
+  return db 
+  .query(`UPDATE reviews SET votes = votes + $1 WHERE review_id = $2 RETURNING *;`, [votesChange, review_id])
+  .then((review) => review.rows[0])
+  .catch(() => {
+
+  })
+}
