@@ -11,13 +11,17 @@ exports.getCategories = (req, res) => {
     });
 };
 
-exports.getCommentsByReviewId = (req, res) => {
+exports.getCommentsByReviewId = (req, res, next) => {
     const {review_id} = req.params
     selectCommentsByReviewId(review_id)
     .then((comments) => {
+        if (!comments) {
+            return Promise.reject({
+              status: 404,
+              msg: `No comment found for review_id: ${review_id}`,
+            });
+          }
         res.status(200).send({ comments });
     })
-    .catch((err) => {
-        console.log(err)
-    })
+    .catch(next)
 }
