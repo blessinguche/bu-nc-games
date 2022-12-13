@@ -40,13 +40,9 @@ describe("GET /api/reviews", () => {
       .get("/api/reviews")
       .expect(200)
       .then(({ body }) => {
-        expect(body).toBeInstanceOf(Object);
-        expect(Object.keys(body)).toEqual(["reviews"]);
 
         const { reviews } = body;
-        expect(reviews).toBeInstanceOf(Array);
         expect(reviews).toHaveLength(13);
-
         reviews.forEach((review) => {
           expect(review).toEqual(
             expect.objectContaining({
@@ -58,7 +54,7 @@ describe("GET /api/reviews", () => {
               created_at: expect.any(String),
               votes: expect.any(Number),
               designer: expect.any(String),
-              comment_count: expect.any(String),
+              comment_count: expect.any(Number),
             })
           );
         });
