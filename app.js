@@ -6,7 +6,6 @@ app.use(express.json());
 
 app.get("/api/categories", getCategories);
 app.get("/api/reviews", getReviews);
-
 app.use((err, req, res, next) => {
   if (err.msg !== undefined) {
     res.status(err.status).send({ msg: err.msg });
