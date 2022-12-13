@@ -143,7 +143,7 @@ describe("PATCH api/reviews/:review", () => {
       inc_votes: 10,
     };
     return request(app)
-      .patch("/api/reviews/2/comments")
+      .patch("/api/reviews/2")
       .send(input)
       .expect(200)
       .then(({ body }) => {
@@ -168,7 +168,7 @@ describe("PATCH api/reviews/:review", () => {
       voting_change: 12,
     };
     return request(app)
-      .patch("/api/reviews/2/comments")
+      .patch("/api/reviews/2")
       .send(input)
       .expect(400)
       .then(({ body }) => {
@@ -178,7 +178,7 @@ describe("PATCH api/reviews/:review", () => {
   test("status:400, responds with an error message when passed an empty object", () => {
     const input = {};
     return request(app)
-      .patch("/api/reviews/2/comments")
+      .patch("/api/reviews/2")
       .send(input)
       .expect(400)
       .then(({ body }) => {
