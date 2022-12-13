@@ -1,4 +1,4 @@
-const { query } = require("express");
+
 const db = require("../db/connection");
 
 exports.selectCategories = () => {
@@ -29,6 +29,9 @@ exports.updateReviewById = (review_id, votesChange) => {
   .query(`UPDATE reviews SET votes = votes + $1 WHERE review_id = $2 RETURNING *;`, [votesChange, review_id])
   .then((review) => review.rows[0])
   .catch(() => {
-
+    return Promise.reject({
+      status: 400,
+      msg: `Bad Request`,
+    });
   })
 }

@@ -15,7 +15,7 @@ app.get("/api/categories", getCategories);
 app.get("/api/reviews", getReviews);
 app.get("/api/reviews/:review_id", getReviewById);
 app.get("/api/reviews/:review_id/comments", getCommentsByReviewId);
-app.post("/api/reviews/:review_id/comments", postComment);
+// app.post("/api/reviews/:review_id/comments", postComment);
 app.patch("/api/reviews/:review_id/comments", patchReview);
 
 app.use((err, req, res, next) => {

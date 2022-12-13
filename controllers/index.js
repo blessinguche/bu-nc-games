@@ -83,7 +83,7 @@ exports.getCommentsByReviewId = (req, res, next) => {
     .catch(next);
 };
 
-exports.patchReview() = (req, res, next) => {
+exports.patchReview = (req, res, next) => {
     const { review_id } = req.params;
     updateReviewById(review_id, req.body.inc_votes)
     .then((review) => {
