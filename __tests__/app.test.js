@@ -137,3 +137,53 @@ describe("GET /api/reviews/:review_id/comments", () => {
       });
   });
 });
+describe("POST /api/reviews/:review_id/comments", () => {
+  test("returns poseted comment", () => {
+    const newComment = {
+      username: "philippaclaire9",
+      body: "cool game 10/10",
+    };
+    return request(app)
+      .post("/api/reviews/6/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment).toEqual(
+          expect.objectContaining({
+            body: expect.any(String),
+            author: expect.any(String),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            review_id: 6,
+          })
+        );
+      });
+  });
+  test.only("status:400, responds with an error message when missing or having wrong properties in body", () => {
+    const newComment = {
+      userame: "philippaclaire9",
+      body: "cool game 10/10",
+    };
+    return request(app)
+      .post("/api/reviews/6/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test.only("status:400, responds with an error message when username isn't valid", () => {
+    const newComment = {
+      username: "philippaclaire",
+      body: "cool game 10/10",
+    };
+    return request(app)
+      .post("/api/reviews/6/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+});

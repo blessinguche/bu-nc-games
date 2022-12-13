@@ -14,7 +14,7 @@ app.get("/api/categories", getCategories);
 app.get("/api/reviews", getReviews);
 app.get("/api/reviews/:review_id", getReviewById);
 app.get("/api/reviews/:review_id/comments", getCommentsByReviewId);
-app.get("/api/reviews/:review_id/comments", postComment);
+app.post("/api/reviews/:review_id/comments", postComment);
 
 app.use((err, req, res, next) => {
   if (err.msg !== undefined) {
