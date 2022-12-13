@@ -11,13 +11,18 @@ exports.getCategories = (req, res) => {
     });
 };
 
-exports.getReviewById = (req, res) => {
+exports.getReviewById = (req, res, next) => {
   const { review_id } = req.params;
   selectReviewById(review_id)
     .then((review) => {
-      res.status(200).send({ review });
+      if (review === undefined) {
+        return Promise.reject({
+          status: 404,
+          msg: `No review found for review_id: ${review_id}`,
+        });
+      } else {
+        res.status(200).send({ review });
+      }
     })
-    .catch((err) => {
-      console.log(err);
-    });
+    .catch(next);
 };

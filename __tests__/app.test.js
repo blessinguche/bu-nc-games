@@ -57,10 +57,25 @@ describe("GET /api/reviews/:review_id", () => {
         expect(Object.keys(body)).toEqual(["review"]);
 
         const { review } = body;
-        expect(review).toBeInstanceOf(Array);
-        expect(review).toHaveLength(1);
+        expect(review).toBeInstanceOf(Object);
 
-        expect(review[0]).toEqual(expected);
+        expect(review).toMatchObject(expected);
+      });
+  });
+  test('status:404, responds with an error message when passed a review ID that doesnt exist', () => {
+    return request(app)
+      .get('/api/reviews/55')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('No review found for review_id: 55');
+      });
+  });
+  test('status:400, responds with an error message when passed a bad review ID', () => {
+    return request(app)
+      .get('/api/reviews/gggg')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request');
       });
   });
 });
