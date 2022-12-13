@@ -137,7 +137,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
       });
   });
 });
-describe("PATCH api/reviews/:review/comments", () => {
+describe("PATCH api/reviews/:review", () => {
   test("returns review object with updated votes", () => {
     const input = {
       inc_votes: 10,
