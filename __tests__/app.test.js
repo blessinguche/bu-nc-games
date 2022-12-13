@@ -160,7 +160,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
         );
       });
   });
-  test.only("status:400, responds with an error message when missing or having wrong properties in body", () => {
+  test("status:400, responds with an error message when missing or having wrong properties in body", () => {
     const newComment = {
       userame: "philippaclaire9",
       body: "cool game 10/10",
@@ -173,7 +173,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(body.msg).toBe("Bad Request");
       });
   });
-  test.only("status:400, responds with an error message when body has no properties", () => {
+  test("status:400, responds with an error message when body has no properties", () => {
     const newComment = {};
     return request(app)
       .post("/api/reviews/6/comments")
