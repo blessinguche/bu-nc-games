@@ -233,3 +233,88 @@ describe("POST /api/reviews/:review_id/comments", () => {
       });
   });
 });
+describe("PATCH api/reviews/:review", () => {
+  test("returns review object with updated votes", () => {
+    const input = {
+      inc_votes: 10,
+    };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(input)
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review.votes).toBe(15);
+        expect(review).toEqual(
+          expect.objectContaining({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            designer: expect.any(String),
+          })
+        );
+      });
+  });
+  test("status:404, responds with an error message when passed a review ID that doesnt exist", () => {
+    const input = {
+      inc_votes: 10,
+    };
+    return request(app)
+      .patch("/api/reviews/2000000")
+      .send(input)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("ID not found");
+      });
+  });
+  test("status:400, responds with an error message when passed a bad review ID", () => {
+    const input = {
+      inc_votes: 10,
+    };
+    return request(app)
+      .patch("/api/reviews/hgvcvgh")
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("status:404, responds with an error message when passed a object with wrong propreties", () => {
+    const input = {
+      voting_change: 12,
+    };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("status:400, responds with an error message when passed an object with no/wrong value type", () => {
+    const input = {
+      inc_votes: "",
+    };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("status:400, responds with an error message when passed an empty object", () => {
+    const input = {};
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+});

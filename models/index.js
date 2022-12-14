@@ -1,4 +1,4 @@
-const { query } = require("express");
+
 const db = require("../db/connection");
 
 exports.selectCategories = () => {
@@ -35,3 +35,8 @@ exports.insertComment = (review_id, newComment) => {
     .then(({ rows }) => rows[0])
     
 };
+exports.updateReviewById = (review_id, votesChange) => {
+  return db 
+  .query(`UPDATE reviews SET votes = votes + $1 WHERE review_id = $2 RETURNING *;`, [votesChange, review_id])
+  .then((review) => review.rows[0])
+}
