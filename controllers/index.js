@@ -4,7 +4,7 @@ const {
   selectReviews,
   selectCommentsByReviewId,
   selectReviewById,
-  patchComment,
+  insertComment,
 } = require("../models");
 
 exports.getCategories = (req, res, next) => {
@@ -78,6 +78,15 @@ exports.getCommentsByReviewId = (req, res, next) => {
         });
       }
       res.status(200).send({ comments });
+    })
+    .catch(next);
+};
+
+exports.postComment = (req, res, next) => {
+  const { review_id } = req.params;
+  insertComment(review_id, req.body)
+    .then((comment) => {
+      res.status(201).send({ comment });
     })
     .catch(next);
 };
