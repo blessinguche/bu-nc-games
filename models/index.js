@@ -25,6 +25,9 @@ exports.selectCommentsByReviewId = (review_id) => {
   return db.query(query, [review_id]).then((result) => result.rows);
 };
 
+exports.selectUsers = () => {
+  return db.query("SELECT * FROM users;").then((result) => result.rows);
+}
 exports.insertComment = (review_id, newComment) => {
   const { username, body } = newComment;
   return db
@@ -34,6 +37,7 @@ exports.insertComment = (review_id, newComment) => {
     )
     .then(({ rows }) => rows[0])
     
+
 };
 exports.updateReviewById = (review_id, votesChange) => {
   return db 
