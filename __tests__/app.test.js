@@ -254,7 +254,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
       });
   });
 });
-describe("PATCH api/reviews/:review", () => {
+describe("PATCH /api/reviews/:review_id", () => {
   test("returns review object with updated votes", () => {
     const input = {
       inc_votes: 10,
@@ -304,7 +304,7 @@ describe("PATCH api/reviews/:review", () => {
         expect(body.msg).toBe("Bad Request");
       });
   });
-  test("status:404, responds with an error message when passed a object with wrong propreties", () => {
+  test("status:400, responds with an error message when passed a object with wrong propreties", () => {
     const input = {
       voting_change: 12,
     };
@@ -339,7 +339,7 @@ describe("PATCH api/reviews/:review", () => {
       });
   });
 });
-describe("GET api/reviews/(queries)", () => {
+describe.only("GET api/reviews/(queries)", () => {
   test("returns", () => {
     return request(app)
       .get("/api/reviews?category=social deduction&sort_by=review_id&order=asc")
@@ -371,10 +371,10 @@ describe("GET api/reviews/(queries)", () => {
         expect(body.msg).toBe("Not found");
       });
   });
-  test("status:404, responds with an error message when passed a category that exsist but has no reviews", () => {
+  test("status:204, responds with an error message when passed a category that exsist but has no reviews", () => {
     return request(app)
       .get("/api/reviews?category=children's games")
-      .expect(400)
+      .expect(204)
       .then(({ body }) => {
         expect(body.msg).toBe("Not found");
       });

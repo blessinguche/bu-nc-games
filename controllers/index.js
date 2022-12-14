@@ -97,6 +97,7 @@ exports.patchReview = (req, res, next) => {
   const { review_id } = req.params;
   updateReviewById(review_id, req.body.inc_votes)
     .then((review) => {
+      console.log(review)
       if (review === undefined) {
         return Promise.reject({
           status: 404,
