@@ -24,3 +24,7 @@ exports.selectCommentsByReviewId = (review_id) => {
   WHERE review_id = $1 ORDER BY created_at DESC;`;
   return db.query(query, [review_id]).then((result) => result.rows);
 };
+
+exports.selectUsers = () => {
+  return db.query("SELECT * FROM users;").then((result) => result.rows);
+}

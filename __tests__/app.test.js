@@ -137,3 +137,24 @@ describe("GET /api/reviews/:review_id/comments", () => {
       });
   });
 });
+describe("GET /api/users", () => {
+  test("returns an array of users object", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const { users } = body;
+        expect(users).toHaveLength(4);
+
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+});
