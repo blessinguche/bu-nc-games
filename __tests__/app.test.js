@@ -158,3 +158,184 @@ describe("GET /api/users", () => {
       });
   });
 });
+describe("POST /api/reviews/:review_id/comments", () => {
+  test("returns poseted comment", () => {
+    const newComment = {
+      username: "philippaclaire9",
+      body: "cool game 10/10",
+    };
+    return request(app)
+      .post("/api/reviews/6/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment).toEqual(
+          expect.objectContaining({
+            body: expect.any(String),
+            author: expect.any(String),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            review_id: 6,
+          })
+        );
+      });
+  });
+  test("returns poseted comment, ignoring extra", () => {
+    const newComment = {
+      username: "philippaclaire9",
+      body: "cool game 10/10",
+      review_id: 7
+    };
+    return request(app)
+      .post("/api/reviews/6/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment).toEqual(
+          expect.objectContaining({
+            body: expect.any(String),
+            author: expect.any(String),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            review_id: 6,
+          })
+        );
+      });
+    });
+  test("status:400, responds with an error message when missing or having wrong properties in body", () => {
+    const newComment = {
+      userame: "philippaclaire9",
+      body: "cool game 10/10",
+    };
+    return request(app)
+      .post("/api/reviews/6/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("status:400, responds with an error message when body has no properties", () => {
+    const newComment = {};
+    return request(app)
+      .post("/api/reviews/6/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("status:400, responds with an error message when passed a none exsitent user", () => {
+    const newComment = {
+      username: "philippaclaire",
+      body: "cool game 10/10",
+    };
+    return request(app)
+      .post("/api/reviews/6/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("status:400, responds with an error message when passed a no user", () => {
+    const newComment = {
+      username: "",
+      body: "cool game 10/10",
+    };
+    return request(app)
+      .post("/api/reviews/6/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+});
+describe("PATCH api/reviews/:review", () => {
+  test("returns review object with updated votes", () => {
+    const input = {
+      inc_votes: 10,
+    };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(input)
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review.votes).toBe(15);
+        expect(review).toEqual(
+          expect.objectContaining({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            designer: expect.any(String),
+          })
+        );
+      });
+  });
+  test("status:404, responds with an error message when passed a review ID that doesnt exist", () => {
+    const input = {
+      inc_votes: 10,
+    };
+    return request(app)
+      .patch("/api/reviews/2000000")
+      .send(input)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("ID not found");
+      });
+  });
+  test("status:400, responds with an error message when passed a bad review ID", () => {
+    const input = {
+      inc_votes: 10,
+    };
+    return request(app)
+      .patch("/api/reviews/hgvcvgh")
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("status:404, responds with an error message when passed a object with wrong propreties", () => {
+    const input = {
+      voting_change: 12,
+    };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("status:400, responds with an error message when passed an object with no/wrong value type", () => {
+    const input = {
+      inc_votes: "",
+    };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("status:400, responds with an error message when passed an empty object", () => {
+    const input = {};
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+});

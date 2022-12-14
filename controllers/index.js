@@ -4,8 +4,9 @@ const {
   selectReviews,
   selectCommentsByReviewId,
   selectReviewById,
-  patchComment,
-  selectUsers
+  insertComment,
+  selectUsers,
+  updateReviewById,
 } = require("../models");
 
 exports.getCategories = (req, res, next) => {
@@ -79,6 +80,31 @@ exports.getCommentsByReviewId = (req, res, next) => {
         });
       }
       res.status(200).send({ comments });
+    })
+    .catch(next);
+};
+
+exports.patchReview = (req, res, next) => {
+  const { review_id } = req.params;
+  updateReviewById(review_id, req.body.inc_votes)
+    .then((review) => {
+      if (review === undefined) {
+        return Promise.reject({
+          status: 404,
+          msg: `ID not found`,
+        });
+      } else {
+        res.status(200).send({ review });
+      }
+    })
+    .catch(next);
+};
+
+exports.postComment = (req, res, next) => {
+  const { review_id } = req.params;
+  insertComment(review_id, req.body)
+    .then((comment) => {
+      res.status(201).send({ comment });
     })
     .catch(next);
 };
