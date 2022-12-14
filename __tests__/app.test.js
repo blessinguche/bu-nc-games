@@ -163,6 +163,30 @@ describe("PATCH api/reviews/:review", () => {
         );
       });
   });
+  test("status:404, responds with an error message when passed a review ID that doesnt exist", () => {
+    const input = {
+      inc_votes: 10,
+    };
+    return request(app)
+      .patch("/api/reviews/2000000")
+      .send(input)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("ID not found");
+      });
+  });
+  test("status:400, responds with an error message when passed a bad review ID", () => {
+    const input = {
+      inc_votes: 10,
+    };
+    return request(app)
+      .patch("/api/reviews/hgvcvgh")
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
   test("status:404, responds with an error message when passed a object with wrong propreties", () => {
     const input = {
       voting_change: 12,
@@ -175,7 +199,7 @@ describe("PATCH api/reviews/:review", () => {
         expect(body.msg).toBe("Bad Request");
       });
   });
-  test("status:404, responds with an error message when passed an object with no/wrong value type", () => {
+  test("status:400, responds with an error message when passed an object with no/wrong value type", () => {
     const input = {
       inc_votes: "",
     };

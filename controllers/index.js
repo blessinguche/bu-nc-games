@@ -84,10 +84,17 @@ exports.getCommentsByReviewId = (req, res, next) => {
 };
 
 exports.patchReview = (req, res, next) => {
-    const { review_id } = req.params;
-    updateReviewById(review_id, req.body.inc_votes)
+  const { review_id } = req.params;
+  updateReviewById(review_id, req.body.inc_votes)
     .then((review) => {
+      if (review === undefined) {
+        return Promise.reject({
+          status: 404,
+          msg: `ID not found`,
+        });
+      } else {
         res.status(200).send({ review });
+      }
     })
-    .catch(next)
-}
+    .catch(next);
+};
