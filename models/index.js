@@ -33,11 +33,5 @@ exports.insertComment = (review_id, newComment) => {
       [body, 0, review_id, new Date(), username]
     )
     .then(({ rows }) => rows[0])
-    .catch(() => {
-      return Promise.reject({
-        status: 400,
-        msg: `Bad Request`,
-      });
-    })
     
 };

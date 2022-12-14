@@ -160,6 +160,29 @@ describe("POST /api/reviews/:review_id/comments", () => {
         );
       });
   });
+  test("returns poseted comment, ignoring extra", () => {
+    const newComment = {
+      username: "philippaclaire9",
+      body: "cool game 10/10",
+      review_id: 7
+    };
+    return request(app)
+      .post("/api/reviews/6/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment).toEqual(
+          expect.objectContaining({
+            body: expect.any(String),
+            author: expect.any(String),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            review_id: 6,
+          })
+        );
+      });
+    });
   test("status:400, responds with an error message when missing or having wrong properties in body", () => {
     const newComment = {
       userame: "philippaclaire9",
@@ -175,6 +198,32 @@ describe("POST /api/reviews/:review_id/comments", () => {
   });
   test("status:400, responds with an error message when body has no properties", () => {
     const newComment = {};
+    return request(app)
+      .post("/api/reviews/6/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("status:400, responds with an error message when passed a none exsitent user", () => {
+    const newComment = {
+      username: "philippaclaire",
+      body: "cool game 10/10",
+    };
+    return request(app)
+      .post("/api/reviews/6/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("status:400, responds with an error message when passed a no user", () => {
+    const newComment = {
+      username: "",
+      body: "cool game 10/10",
+    };
     return request(app)
       .post("/api/reviews/6/comments")
       .send(newComment)
