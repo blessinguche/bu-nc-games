@@ -164,7 +164,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
     const newComment = {
       username: "philippaclaire9",
       body: "cool game 10/10",
-      review_id: 7
+      review_id: 7,
     };
     return request(app)
       .post("/api/reviews/6/comments")
@@ -182,7 +182,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
           })
         );
       });
-    });
+  });
   test("status:400, responds with an error message when missing or having wrong properties in body", () => {
     const newComment = {
       userame: "philippaclaire9",
@@ -230,6 +230,31 @@ describe("POST /api/reviews/:review_id/comments", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Bad Request");
+      });
+  });
+});
+describe("GET api/reviews/(queries)", () => {
+  test("returns", () => {
+    return request(app)
+      .get("/api/reviews?category=social deduction&sort_by=review_id&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        reviews.forEach((review) => {
+          expect(review).toEqual(
+            expect.objectContaining({
+              owner: expect.any(String),
+              title: expect.any(String),
+              review_id: expect.any(Number),
+              category: "social deduction",
+              review_img_url: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              designer: expect.any(String),
+              comment_count: expect.any(Number),
+            })
+          );
+        });
       });
   });
 });

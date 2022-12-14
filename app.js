@@ -6,6 +6,7 @@ const {
   getReviewById,
   getCommentsByReviewId,
   postComment,
+
 } = require("./controllers");
 const { handle404Paths, handleCustomErrors, handlePsqlErrors, handle500s } = require("./errors");
 
@@ -16,7 +17,6 @@ app.get("/api/reviews", getReviews);
 app.get("/api/reviews/:review_id", getReviewById);
 app.get("/api/reviews/:review_id/comments", getCommentsByReviewId);
 app.post("/api/reviews/:review_id/comments", postComment);
-
 
 app.all('*', handle404Paths);
 app.use(handleCustomErrors);

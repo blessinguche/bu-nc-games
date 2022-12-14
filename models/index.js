@@ -4,15 +4,20 @@ const db = require("../db/connection");
 exports.selectCategories = () => {
   return db.query("SELECT * FROM categories;").then((result) => result.rows);
 };
-exports.selectReviews = () => {
-  const query = `
-    SELECT reviews.*, COUNT(comments.review_id)::INT AS comment_count
-    FROM reviews 
-    LEFT JOIN comments ON comments.review_id = reviews.review_id
-    GROUP BY reviews.review_id
-    ORDER BY reviews.created_at DESC;`;
-  return db.query(query).then((result) => result.rows);
+exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
+  const queryArray = [];
+  let queryStr = `SELECT reviews.*, COUNT(comments.review_id)::INT AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id
+  `;
+  if (category !== undefined) {
+    queryStr += ` WHERE category = $1`;
+    queryArray.push(category);
+  } else if ( category === undefined ){
+
+  }
+  queryStr += ` GROUP BY reviews.review_id ORDER BY ${sort_by} ${order}`;
+  return db.query(queryStr, queryArray).then((result) => result.rows);
 };
+
 exports.selectReviewById = (review_id) => {
   return db
     .query(`SELECT * FROM reviews WHERE review_id = $1`, [review_id])
@@ -32,6 +37,6 @@ exports.insertComment = (review_id, newComment) => {
       "INSERT INTO comments (body, votes, review_id, created_at, author) VALUES ($1, $2, $3, $4, $5) RETURNING *;",
       [body, 0, review_id, new Date(), username]
     )
-    .then(({ rows }) => rows[0])
-    
+    .then(({ rows }) => rows[0]);
 };
+
