@@ -257,4 +257,21 @@ describe("GET api/reviews/(queries)", () => {
         });
       });
   });
+  test("status:400, responds with an error message when passed none valid category", () => {
+    return request(app)
+      .get("/api/reviews?category=999999")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+  test("status:404, responds with an error message when passed a category that exsist but has no reviews", () => {
+    return request(app)
+      .get("/api/reviews?category=children's games")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+  
 });

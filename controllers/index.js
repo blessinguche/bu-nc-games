@@ -18,7 +18,14 @@ exports.getReviews = (req, res, next) => {
   const { category, sort_by, order } = req.query;
   selectReviews(category, sort_by, order)
     .then((reviews) => {
-      res.status(200).send({ reviews });
+      if (reviews.length === 0) {
+        return Promise.reject({
+          status: 400,
+          msg: `Not found`,
+        });
+      } else {
+        res.status(200).send({ reviews });
+      }
     })
     .catch(next);
 };
