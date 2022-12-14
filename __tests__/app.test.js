@@ -163,9 +163,21 @@ describe("PATCH api/reviews/:review", () => {
         );
       });
   });
-  test("status:404, responds with an error message when passed a upject with wrong propreties", () => {
+  test("status:404, responds with an error message when passed a object with wrong propreties", () => {
     const input = {
       voting_change: 12,
+    };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("status:404, responds with an error message when passed an object with no/wrong value type", () => {
+    const input = {
+      inc_votes: "",
     };
     return request(app)
       .patch("/api/reviews/2")
