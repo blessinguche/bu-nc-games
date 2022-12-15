@@ -21,9 +21,10 @@ exports.getReviews = (req, res, next) => {
   selectReviews(category, sort_by, order)
     .then((reviews) => {
       if (reviews.length === 0) {
+        
         return Promise.reject({
           status: 400,
-          msg: `Not found`,
+          msg: `Bad Request`,
         });
       } else {
         res.status(200).send({ reviews });
@@ -97,7 +98,7 @@ exports.patchReview = (req, res, next) => {
   const { review_id } = req.params;
   updateReviewById(review_id, req.body.inc_votes)
     .then((review) => {
-      console.log(review)
+      console.log(review);
       if (review === undefined) {
         return Promise.reject({
           status: 404,
@@ -120,9 +121,9 @@ exports.postComment = (req, res, next) => {
 };
 
 exports.getUsers = (req, res, next) => {
-    selectUsers()
+  selectUsers()
     .then((users) => {
       res.status(200).send({ users });
     })
     .catch(next);
-}
+};

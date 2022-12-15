@@ -1,4 +1,3 @@
-
 const db = require("../db/connection");
 
 exports.selectCategories = () => {
@@ -14,7 +13,6 @@ exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
   }
   queryStr += ` GROUP BY reviews.review_id ORDER BY ${sort_by} ${order}`;
   return db.query(queryStr, queryArray).then((result) => result.rows);
-
 };
 
 exports.selectReviewById = (review_id) => {
@@ -31,7 +29,7 @@ exports.selectCommentsByReviewId = (review_id) => {
 
 exports.selectUsers = () => {
   return db.query("SELECT * FROM users;").then((result) => result.rows);
-}
+};
 exports.insertComment = (review_id, newComment) => {
   const { username, body } = newComment;
   return db
@@ -40,10 +38,12 @@ exports.insertComment = (review_id, newComment) => {
       [body, 0, review_id, new Date(), username]
     )
     .then(({ rows }) => rows[0]);
-
 };
 exports.updateReviewById = (review_id, votesChange) => {
-  return db 
-  .query(`UPDATE reviews SET votes = votes + $1 WHERE review_id = $2 RETURNING *;`, [votesChange, review_id])
-  .then((review) => review.rows[0])
-}
+  return db
+    .query(
+      `UPDATE reviews SET votes = votes + $1 WHERE review_id = $2 RETURNING *;`,
+      [votesChange, review_id]
+    )
+    .then((review) => review.rows[0]);
+};

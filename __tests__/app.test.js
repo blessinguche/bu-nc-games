@@ -339,7 +339,7 @@ describe("PATCH /api/reviews/:review_id", () => {
       });
   });
 });
-describe.only("GET api/reviews/(queries)", () => {
+describe("GET api/reviews/(queries)", () => {
   test("returns", () => {
     return request(app)
       .get("/api/reviews?category=social deduction&sort_by=review_id&order=asc")
@@ -368,15 +368,15 @@ describe.only("GET api/reviews/(queries)", () => {
       .get("/api/reviews?category=999999")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Not found");
+        expect(body.msg).toBe("Bad Request");
       });
   });
-  test("status:204, responds with an error message when passed a category that exsist but has no reviews", () => {
+  test("status:400, responds with an error message when passed a category that exsist but has no reviews", () => {
     return request(app)
       .get("/api/reviews?category=children's games")
-      .expect(204)
+      .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Not found");
+        expect(body.msg).toBe("Bad Request");
       });
   });
   

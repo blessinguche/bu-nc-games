@@ -3,6 +3,7 @@ const handle404Paths = (req, res, next) => {
 };
 
 const handleCustomErrors = (err, req, res, next) => {
+  console.log(err)
   if (err.msg && err.status) {
     res.status(err.status).send({ msg: err.msg });
   } else {
