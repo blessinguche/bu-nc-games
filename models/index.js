@@ -1,19 +1,29 @@
-
 const db = require("../db/connection");
+const { checkExists } = require("../utils");
 
 exports.selectCategories = async () => {
   const result = await db.query("SELECT * FROM categories;");
   return result.rows;
 };
-exports.selectReviews = async () => {
-  const query = `
-    SELECT reviews.*, COUNT(comments.review_id)::INT AS comment_count
-    FROM reviews 
-    LEFT JOIN comments ON comments.review_id = reviews.review_id
-    GROUP BY reviews.review_id
-    ORDER BY reviews.created_at DESC;`;
-  const result = await db.query(query);
-  return result.rows;
+exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
+  const queryArray = [];
+  let queryStr = `SELECT reviews.*, COUNT(comments.review_id)::INT AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id
+  `;
+  if (category !== undefined) {
+    queryStr += ` WHERE category = $1`;
+    queryArray.push(category);
+  }
+  queryStr += ` GROUP BY reviews.review_id ORDER BY ${sort_by} ${order}`;
+  if (category === undefined) {
+    return db.query(queryStr, queryArray).then((result) => result.rows);
+  }
+  return checkExists("categories", "slug", category)
+    .then((results) => {
+      if (results && category !== undefined) {
+        return db.query(queryStr, queryArray);
+      }
+    })
+    .then((result) => result.rows);
 };
 exports.selectReviewById = async (review_id) => {
   const result = await db

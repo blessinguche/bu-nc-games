@@ -185,7 +185,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
     const newComment = {
       username: "philippaclaire9",
       body: "cool game 10/10",
-      review_id: 7
+      review_id: 7,
     };
     return request(app)
       .post("/api/reviews/6/comments")
@@ -203,7 +203,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
           })
         );
       });
-    });
+  });
   test("status:400, responds with an error message when missing or having wrong properties in body", () => {
     const newComment = {
       userame: "philippaclaire9",
@@ -254,7 +254,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
       });
   });
 });
-describe("PATCH api/reviews/:review", () => {
+describe("PATCH /api/reviews/:review_id", () => {
   test("returns review object with updated votes", () => {
     const input = {
       inc_votes: 10,
@@ -304,7 +304,7 @@ describe("PATCH api/reviews/:review", () => {
         expect(body.msg).toBe("Bad Request");
       });
   });
-  test("status:404, responds with an error message when passed a object with wrong propreties", () => {
+  test("status:400, responds with an error message when passed a object with wrong propreties", () => {
     const input = {
       voting_change: 12,
     };
@@ -339,3 +339,165 @@ describe("PATCH api/reviews/:review", () => {
       });
   });
 });
+describe("GET api/reviews/(queries)", () => {
+  test("returns objects of specified category sorted by date ain descing order", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=review_id")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        reviews.forEach((review) => {
+          expect(review).toEqual(
+            expect.objectContaining({
+              owner: expect.any(String),
+              title: expect.any(String),
+              review_id: expect.any(Number),
+              category: expect.any(String),
+              review_body: expect.any(String),
+              review_img_url: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              designer: expect.any(String),
+              comment_count: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+  test("returns sorted objects by date in specifed order", () => {
+    return request(app)
+      .get("/api/reviews?order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        reviews.forEach((review) => {
+          expect(review).toEqual(
+            expect.objectContaining({
+              owner: expect.any(String),
+              title: expect.any(String),
+              review_id: expect.any(Number),
+              category: expect.any(String),
+              review_body: expect.any(String),
+              review_img_url: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              designer: expect.any(String),
+              comment_count: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+  test("returns objects sorted by date in descing order when only queried catergory", () => {
+    return request(app)
+      .get("/api/reviews?category=social deduction")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        reviews.forEach((review) => {
+          expect(review).toEqual(
+            expect.objectContaining({
+              owner: expect.any(String),
+              title: expect.any(String),
+              review_id: expect.any(Number),
+              category: "social deduction",
+              review_body: expect.any(String),
+              review_img_url: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              designer: expect.any(String),
+              comment_count: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+  test("returns sorted objected when query category, sort_by and order", () => {
+    return request(app)
+      .get("/api/reviews?category=social deduction&sort_by=review_id&rder=asc")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        reviews.forEach((review) => {
+          expect(review).toEqual(
+            expect.objectContaining({
+              owner: expect.any(String),
+              title: expect.any(String),
+              review_id: expect.any(Number),
+              category: "social deduction",
+              review_body: expect.any(String),
+              review_img_url: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              designer: expect.any(String),
+              comment_count: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+  test("status:400, responds with an error message when passed an object with no/wrong value type", () => {
+    const input = {
+      inc_votes: "",
+    };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("status:400, responds with an error message when passed an empty object", () => {
+    const input = {};
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("status:400, responds with an error message when passed none valid category", () => {
+    return request(app)
+      .get("/api/reviews?category=999999")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("status:200, responds with an empty array when passed a category that exsist but has no reviews", () => {
+    return request(app)
+      .get("/api/reviews?category=children's games")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews).toMatchObject([]);
+      });
+  });
+  test("status:400, responds with an error message when passed none valid category", () => {
+    return request(app)
+      .get("/api/reviews?category=banana")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("status:400, responds with an error message when passed none valid order", () => {
+    return request(app)
+      .get("/api/reviews?order=banana")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("status:400, responds with an error message when passed none valid sort_by", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=banana")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+});
+
