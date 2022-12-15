@@ -26,8 +26,13 @@ exports.selectReviews = async (category, sort_by = "created_at", order = "DESC")
     .then((result) => result.rows);
 };
 exports.selectReviewById = async (review_id) => {
-  const result = await db
-    .query(`SELECT * FROM reviews WHERE review_id = $1`, [review_id]);
+  const queryStr = `SELECT reviews.*, COUNT(comments.review_id)::INT AS comment_count
+  FROM reviews 
+  LEFT JOIN comments ON comments.review_id = reviews.review_id
+  WHERE reviews.review_id = $1
+  GROUP BY reviews.review_id
+  ORDER BY reviews.created_at DESC;`;
+  const result = await db.query(queryStr, [review_id]);
   return result.rows[0];
 };
 
