@@ -22,7 +22,6 @@ exports.selectReviewById = async (review_id) => {
   GROUP BY reviews.review_id
   ORDER BY reviews.created_at DESC;`;
   const result = await db.query(queryStr, [review_id]);
-  console.log(result.rows[0])
   return result.rows[0];
 };
 
