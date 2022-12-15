@@ -1,8 +1,9 @@
 const db = require("../db/connection");
 const { checkExists } = require("../utils");
 
-exports.selectCategories = () => {
-  return db.query("SELECT * FROM categories;").then((result) => result.rows);
+exports.selectCategories = async () => {
+  const result = await db.query("SELECT * FROM categories;");
+  return result.rows;
 };
 exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
   const queryArray = [];
@@ -24,36 +25,36 @@ exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
     })
     .then((result) => result.rows);
 };
-
-exports.selectReviewById = (review_id) => {
-  return db
-    .query(`SELECT * FROM reviews WHERE review_id = $1`, [review_id])
-    .then((result) => result.rows[0]);
+exports.selectReviewById = async (review_id) => {
+  const result = await db
+    .query(`SELECT * FROM reviews WHERE review_id = $1`, [review_id]);
+  return result.rows[0];
 };
 
-exports.selectCommentsByReviewId = (review_id) => {
+exports.selectCommentsByReviewId = async (review_id) => {
   const query = `SELECT * FROM comments
   WHERE review_id = $1 ORDER BY created_at DESC;`;
-  return db.query(query, [review_id]).then((result) => result.rows);
+  const result = await db.query(query, [review_id]);
+  return result.rows;
 };
 
-exports.selectUsers = () => {
-  return db.query("SELECT * FROM users;").then((result) => result.rows);
-};
-exports.insertComment = (review_id, newComment) => {
+exports.selectUsers = async () => {
+  const result = await db.query("SELECT * FROM users;");
+  return result.rows;
+}
+exports.insertComment = async (review_id, newComment) => {
   const { username, body } = newComment;
-  return db
+  const { rows } = await db
     .query(
       "INSERT INTO comments (body, votes, review_id, created_at, author) VALUES ($1, $2, $3, $4, $5) RETURNING *;",
       [body, 0, review_id, new Date(), username]
-    )
-    .then(({ rows }) => rows[0]);
+    );
+  return rows[0];
+    
+
 };
-exports.updateReviewById = (review_id, votesChange) => {
-  return db
-    .query(
-      `UPDATE reviews SET votes = votes + $1 WHERE review_id = $2 RETURNING *;`,
-      [votesChange, review_id]
-    )
-    .then((review) => review.rows[0]);
-};
+exports.updateReviewById = async (review_id, votesChange) => {
+  const review = await db
+    .query(`UPDATE reviews SET votes = votes + $1 WHERE review_id = $2 RETURNING *;`, [votesChange, review_id]);
+  return review.rows[0];
+}

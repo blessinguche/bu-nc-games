@@ -6,6 +6,7 @@ const {
   insertComment,
   selectUsers,
   updateReviewById,
+  removeComment,
 } = require("../models");
 
 exports.getCategories = (req, res, next) => {
