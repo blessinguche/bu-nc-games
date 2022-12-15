@@ -1,4 +1,3 @@
-const reviews = require("../db/data/test-data/reviews");
 const {
   selectCategories,
   selectReviews,
@@ -20,15 +19,7 @@ exports.getReviews = (req, res, next) => {
   const { category, sort_by, order } = req.query;
   selectReviews(category, sort_by, order)
     .then((reviews) => {
-      if (reviews.length === 0) {
-        
-        return Promise.reject({
-          status: 400,
-          msg: `Bad Request`,
-        });
-      } else {
-        res.status(200).send({ reviews });
-      }
+      res.status(200).send({ reviews });
     })
     .catch(next);
 };
@@ -98,7 +89,6 @@ exports.patchReview = (req, res, next) => {
   const { review_id } = req.params;
   updateReviewById(review_id, req.body.inc_votes)
     .then((review) => {
-      console.log(review);
       if (review === undefined) {
         return Promise.reject({
           status: 404,

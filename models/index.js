@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const { checkExists } = require("../utils");
 
 exports.selectCategories = () => {
   return db.query("SELECT * FROM categories;").then((result) => result.rows);
@@ -12,7 +13,16 @@ exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
     queryArray.push(category);
   }
   queryStr += ` GROUP BY reviews.review_id ORDER BY ${sort_by} ${order}`;
-  return db.query(queryStr, queryArray).then((result) => result.rows);
+  if (category === undefined) {
+    return db.query(queryStr, queryArray).then((result) => result.rows);
+  }
+  return checkExists("categories", "slug", category)
+    .then((results) => {
+      if (results && category !== undefined) {
+        return db.query(queryStr, queryArray);
+      }
+    })
+    .then((result) => result.rows);
 };
 
 exports.selectReviewById = (review_id) => {
