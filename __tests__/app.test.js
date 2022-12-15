@@ -4,7 +4,6 @@ const app = require("../app");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data/index");
 
-
 afterAll(() => {
   if (db.end) db.end();
 });
@@ -341,7 +340,55 @@ describe("PATCH /api/reviews/:review_id", () => {
   });
 });
 describe("GET api/reviews/(queries)", () => {
-  test("returns objects with only queried catergory", () => {
+  test("returns objects of specified category sorted by date ain descing order", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=review_id")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        reviews.forEach((review) => {
+          expect(review).toEqual(
+            expect.objectContaining({
+              owner: expect.any(String),
+              title: expect.any(String),
+              review_id: expect.any(Number),
+              category: expect.any(String),
+              review_body: expect.any(String),
+              review_img_url: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              designer: expect.any(String),
+              comment_count: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+  test("returns sorted objects by date in specifed order", () => {
+    return request(app)
+      .get("/api/reviews?order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        reviews.forEach((review) => {
+          expect(review).toEqual(
+            expect.objectContaining({
+              owner: expect.any(String),
+              title: expect.any(String),
+              review_id: expect.any(Number),
+              category: expect.any(String),
+              review_body: expect.any(String),
+              review_img_url: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              designer: expect.any(String),
+              comment_count: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+  test("returns objects sorted by date in descing order when only queried catergory", () => {
     return request(app)
       .get("/api/reviews?category=social deduction")
       .expect(200)
@@ -354,6 +401,7 @@ describe("GET api/reviews/(queries)", () => {
               title: expect.any(String),
               review_id: expect.any(Number),
               category: "social deduction",
+              review_body: expect.any(String),
               review_img_url: expect.any(String),
               created_at: expect.any(String),
               votes: expect.any(Number),
@@ -364,13 +412,12 @@ describe("GET api/reviews/(queries)", () => {
         });
       });
   });
-  test("returns sorted objects with only queried catergory ", () => {
+  test("returns sorted objected when query category, sort_by and order", () => {
     return request(app)
-      .get("/api/reviews?category=social deduction&sort_by=review_id&order=asc")
+      .get("/api/reviews?category=social deduction&sort_by=review_id&rder=asc")
       .expect(200)
       .then(({ body }) => {
         const { reviews } = body;
-        expect(reviews[0].review_id).toBeLessThan(reviews[1].review_id);
         reviews.forEach((review) => {
           expect(review).toEqual(
             expect.objectContaining({
@@ -378,6 +425,7 @@ describe("GET api/reviews/(queries)", () => {
               title: expect.any(String),
               review_id: expect.any(Number),
               category: "social deduction",
+              review_body: expect.any(String),
               review_img_url: expect.any(String),
               created_at: expect.any(String),
               votes: expect.any(Number),
