@@ -6,6 +6,7 @@ const {
   insertComment,
   selectUsers,
   updateReviewById,
+  removeComment,
 } = require("../models");
 
 exports.getCategories = (req, res, next) => {
@@ -16,12 +17,14 @@ exports.getCategories = (req, res, next) => {
     .catch(next);
 };
 exports.getReviews = (req, res, next) => {
-  selectReviews()
+  const { category, sort_by, order } = req.query;
+  selectReviews(category, sort_by, order)
     .then((reviews) => {
       res.status(200).send({ reviews });
     })
     .catch(next);
 };
+
 exports.getReviewById = (req, res, next) => {
   const { review_id } = req.params;
   selectReviewById(review_id)
@@ -109,9 +112,9 @@ exports.postComment = (req, res, next) => {
 };
 
 exports.getUsers = (req, res, next) => {
-    selectUsers()
+  selectUsers()
     .then((users) => {
       res.status(200).send({ users });
     })
     .catch(next);
-}
+};
