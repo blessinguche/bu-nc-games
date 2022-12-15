@@ -8,9 +8,14 @@ const {
   postComment,
   getUsers,
   patchReview,
-
+  deleteComment,
 } = require("./controllers");
-const { handle404Paths, handleCustomErrors, handlePsqlErrors, handle500s } = require("./errors");
+const {
+  handle404Paths,
+  handleCustomErrors,
+  handlePsqlErrors,
+  handle500s,
+} = require("./errors");
 
 app.use(express.json());
 
@@ -22,9 +27,9 @@ app.get("/api/reviews/:review_id/comments", getCommentsByReviewId);
 
 app.post("/api/reviews/:review_id/comments", postComment);
 app.patch("/api/reviews/:review_id", patchReview);
+app.delete("/api/comments/:comment_id", deleteComment);
 
-
-app.all('*', handle404Paths);
+app.all("*", handle404Paths);
 app.use(handleCustomErrors);
 app.use(handlePsqlErrors);
 app.use(handle500s);
