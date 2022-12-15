@@ -1,4 +1,3 @@
-const reviews = require("../db/data/test-data/reviews");
 const {
   selectCategories,
   selectReviews,
