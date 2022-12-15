@@ -5,7 +5,7 @@ exports.selectCategories = async () => {
   const result = await db.query("SELECT * FROM categories;");
   return result.rows;
 };
-exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
+exports.selectReviews = async (category, sort_by = "created_at", order = "DESC") => {
   const queryArray = [];
   let queryStr = `SELECT reviews.*, COUNT(comments.review_id)::INT AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id
   `;
@@ -15,9 +15,9 @@ exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
   }
   queryStr += ` GROUP BY reviews.review_id ORDER BY ${sort_by} ${order}`;
   if (category === undefined) {
-    return db.query(queryStr, queryArray).then((result) => result.rows);
+    return await db.query(queryStr, queryArray).then((result) => result.rows);
   }
-  return checkExists("categories", "slug", category)
+  return await checkExists("categories", "slug", category)
     .then((results) => {
       if (results && category !== undefined) {
         return db.query(queryStr, queryArray);
