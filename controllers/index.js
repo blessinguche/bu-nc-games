@@ -6,6 +6,7 @@ const {
   insertComment,
   selectUsers,
   updateReviewById,
+  removeComment,
 } = require("../models");
 
 exports.getCategories = (req, res, next) => {
@@ -109,9 +110,9 @@ exports.postComment = (req, res, next) => {
 };
 
 exports.getUsers = (req, res, next) => {
-    selectUsers()
+  selectUsers()
     .then((users) => {
       res.status(200).send({ users });
     })
     .catch(next);
-}
+};
