@@ -501,8 +501,8 @@ describe("GET api/reviews/(queries)", () => {
   });
 });
 
-describe("GET /api/reviews/:review_id (comment count)", () => {
-  test("returns review object with comment count for that review_id", () => {
+describe('GET /api/reviews/:review_id (comment count)', () => {
+  test('returns review object with comment count for that review_id', () => {
     const expected = {
       review_id: 2,
       title: "Jenga",
@@ -514,7 +514,7 @@ describe("GET /api/reviews/:review_id (comment count)", () => {
       category: "dexterity",
       created_at: "2021-01-18T10:01:41.251Z",
       votes: 5,
-      comment_count: 3,
+      comment_count: 3
     };
     return request(app)
       .get("/api/reviews/2")
@@ -535,31 +535,6 @@ describe("GET /api/reviews/:review_id (comment count)", () => {
   test("status:400, responds with an error message when passed a bad review ID", () => {
     return request(app)
       .get("/api/reviews/gggg")
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Bad Request");
-      });
-  });
-});
-
-describe("DELETE /api/comments/:comment_id", () => {
-  test("returns a status 204 no content and the deleted comemnt", () => {
-    return request(app)
-      .delete("/api/comments/2")
-      .expect(204)
-  });
-
-  test("status:404, responds with an error message when passed a comment_id that doesnt exist", () => {
-    return request(app)
-      .delete("/api/comments/2000000")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("ID not found");
-      });
-  });
-  test("status:400, responds with an error message when passed a bad comment_id", () => {
-    return request(app)
-      .delete("/api/comments/hgvcvgh")
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Bad Request");
