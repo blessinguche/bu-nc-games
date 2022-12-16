@@ -118,3 +118,19 @@ exports.getUsers = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.deleteComment = (req, res, next) => {
+  const { comment_id } = req.params;
+  removeComment(comment_id)
+    .then((commment) => {
+      if (commment.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: `ID not found`,
+        });
+      } else {
+      res.status(204).send({commment})
+    }
+    })
+    .catch(next);
+};
