@@ -566,3 +566,13 @@ describe("DELETE /api/comments/:comment_id", () => {
       });
   });
 });
+describe("GET /api", () => {
+  test("returns objects of endpoints", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        const { endpoints } = body;
+      });
+  });
+});
