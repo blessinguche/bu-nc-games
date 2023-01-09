@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const fs = require("fs/promises")
 const { checkExists } = require("../utils");
 
 exports.selectCategories = async () => {
@@ -72,3 +73,9 @@ exports.removeComment = async (comment_id) => {
   ]);
   return result.rows;
 };
+exports.readEndpoints = async () => {
+  const result = await fs.readFile(`${__dirname}/../endpoints.json`, "utf-8")
+  
+  return result;
+};
+

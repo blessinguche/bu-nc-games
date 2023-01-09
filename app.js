@@ -9,6 +9,7 @@ const {
   getUsers,
   patchReview,
   deleteComment,
+  getApi,
 } = require("./controllers");
 const {
   handle404Paths,
@@ -28,6 +29,7 @@ app.get("/api/reviews/:review_id/comments", getCommentsByReviewId);
 app.post("/api/reviews/:review_id/comments", postComment);
 app.patch("/api/reviews/:review_id", patchReview);
 app.delete("/api/comments/:comment_id", deleteComment);
+app.get("/api", getApi);
 
 app.all("*", handle404Paths);
 app.use(handleCustomErrors);

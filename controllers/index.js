@@ -7,6 +7,7 @@ const {
   selectUsers,
   updateReviewById,
   removeComment,
+  readEndpoints,
 } = require("../models");
 
 exports.getCategories = (req, res, next) => {
@@ -129,8 +130,18 @@ exports.deleteComment = (req, res, next) => {
           msg: `ID not found`,
         });
       } else {
-      res.status(204).send({commment})
-    }
+        res.status(204).send({ commment });
+      }
+    })
+    .catch(next);
+};
+exports.getApi = (req, res, next) => {
+  readEndpoints()
+    .then((endpoints) => {
+      console.log(endpoints);
+      const parsedEndpoints = JSON.parse(endpoints);
+      console.log(parsedEndpoints);
+      res.status(200).send({ endpoints: parsedEndpoints });
     })
     .catch(next);
 };

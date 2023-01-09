@@ -544,9 +544,7 @@ describe("GET /api/reviews/:review_id (comment count)", () => {
 
 describe("DELETE /api/comments/:comment_id", () => {
   test("returns a status 204 no content and the deleted comemnt", () => {
-    return request(app)
-      .delete("/api/comments/2")
-      .expect(204)
+    return request(app).delete("/api/comments/2").expect(204);
   });
 
   test("status:404, responds with an error message when passed a comment_id that doesnt exist", () => {
@@ -573,6 +571,11 @@ describe("GET /api", () => {
       .expect(200)
       .then(({ body }) => {
         const { endpoints } = body;
+        expect(endpoints).toEqual(
+          expect.objectContaining({
+            "GET /api": expect.any(Object),
+          })
+        );
       });
   });
 });
