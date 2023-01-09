@@ -8,6 +8,12 @@ const {
   updateReviewById,
   removeComment,
   readEndpoints,
+  insertCategory,
+  updateComment,
+  insertReview,
+  insertCommentByReviewId,
+  removeReview,
+  selectUserByUsername,
 } = require("../models");
 
 exports.getCategories = (req, res, next) => {
@@ -142,6 +148,53 @@ exports.getApi = (req, res, next) => {
       const parsedEndpoints = JSON.parse(endpoints);
       console.log(parsedEndpoints);
       res.status(200).send({ endpoints: parsedEndpoints });
+    })
+    .catch(next);
+};
+
+exports.postCategory = (req, res, next) => {
+  insertCategory(req.body)
+    .then((category) => {
+      res.status(201).send({ category });
+    })
+    .catch(next);
+};
+
+exports.patchComment = (req, res, next) => {
+  updateComment(req.body, req.params.comment_id)
+    .then((comment) => {
+      res.status(200).send({ comment });
+    })
+    .catch(next);
+};
+exports.postCommentByReviewId = (req, res, next) => {
+  insertCommentByReviewId(req.body, req.params.review_id)
+    .then((comment) => {
+      res.status(201).send({ comment });
+    })
+    .catch(next);
+};
+
+exports.postReview = (req, res, next) => {
+  insertReview(req.body)
+    .then((review) => {
+      res.status(201).send({ review });
+    })
+    .catch(next);
+};
+
+exports.deleteReview = (req, res, next) => {
+  removeReview(req.params.review_id)
+    .then(() => {
+      res.status(204).send({});
+    })
+    .catch(next);
+};
+
+exports.getUserByUsername = (req, res, next) => {
+  selectUserByUsername(req.params.username)
+    .then((user) => {
+      res.status(200).send({ user });
     })
     .catch(next);
 };

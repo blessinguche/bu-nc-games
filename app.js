@@ -1,19 +1,6 @@
 const express = require("express");
-const cors = require('cors');
-app.use(cors());
-
+const cors = require("cors");
 const app = express();
-const {
-  getCategories,
-  getReviews,
-  getReviewById,
-  getCommentsByReviewId,
-  postComment,
-  getUsers,
-  patchReview,
-  deleteComment,
-  getApi,
-} = require("./controllers");
 const {
   handle404Paths,
   handleCustomErrors,
@@ -21,18 +8,12 @@ const {
   handle500s,
 } = require("./errors");
 
+const apiRouter = require('./routes/api-router');
+
 app.use(express.json());
+app.use(cors());
 
-app.get("/api/categories", getCategories);
-app.get("/api/reviews", getReviews);
-app.get("/api/reviews/:review_id", getReviewById);
-app.get("/api/users", getUsers);
-app.get("/api/reviews/:review_id/comments", getCommentsByReviewId);
-
-app.post("/api/reviews/:review_id/comments", postComment);
-app.patch("/api/reviews/:review_id", patchReview);
-app.delete("/api/comments/:comment_id", deleteComment);
-app.get("/api", getApi);
+app.use("/api", apiRouter);
 
 app.all("*", handle404Paths);
 app.use(handleCustomErrors);
