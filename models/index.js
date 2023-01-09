@@ -80,6 +80,7 @@ exports.readEndpoints = async () => {
 
   return result;
 };
+
 exports.insertCategory = (newCategory) => {
   const categoryData = [newCategory.slug, newCategory.description];
   return db
