@@ -5,8 +5,6 @@ const {
   patchReview,
   postReview,
   deleteReview,
-} = require("../controllers/index");
-const {
   getCommentsByReviewId,
   postCommentByReviewId,
 } = require("../controllers");

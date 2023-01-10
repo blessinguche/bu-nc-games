@@ -11,7 +11,6 @@ const {
   insertCategory,
   updateComment,
   insertReview,
-  insertCommentByReviewId,
   removeReview,
   selectUserByUsername,
 } = require("../models");
@@ -39,7 +38,7 @@ exports.getReviewById = (req, res, next) => {
       if (review === undefined) {
         return Promise.reject({
           status: 404,
-          msg: `ID not found`,
+          msg: `Not found`,
         });
       } else {
         res.status(200).send({ review });
@@ -55,7 +54,7 @@ exports.getCommentsByReviewId = (req, res, next) => {
       if (comments.length === 0) {
         return Promise.reject({
           status: 404,
-          msg: `ID not found`,
+          msg: `Not found`,
         });
       }
       res.status(200).send({ comments });
@@ -69,7 +68,7 @@ exports.getReviewById = (req, res, next) => {
       if (review === undefined) {
         return Promise.reject({
           status: 404,
-          msg: `ID not found`,
+          msg: `Not found`,
         });
       } else {
         res.status(200).send({ review });
@@ -85,7 +84,7 @@ exports.getCommentsByReviewId = (req, res, next) => {
       if (comments.length === 0) {
         return Promise.reject({
           status: 404,
-          msg: `ID not found`,
+          msg: `Not found`,
         });
       }
       res.status(200).send({ comments });
@@ -100,7 +99,7 @@ exports.patchReview = (req, res, next) => {
       if (review === undefined) {
         return Promise.reject({
           status: 404,
-          msg: `ID not found`,
+          msg: `Not found`,
         });
       } else {
         res.status(200).send({ review });
@@ -109,7 +108,7 @@ exports.patchReview = (req, res, next) => {
     .catch(next);
 };
 
-exports.postComment = (req, res, next) => {
+exports.postCommentByReviewId = (req, res, next) => {
   const { review_id } = req.params;
   insertComment(review_id, req.body)
     .then((comment) => {
@@ -133,7 +132,7 @@ exports.deleteComment = (req, res, next) => {
       if (commment.length === 0) {
         return Promise.reject({
           status: 404,
-          msg: `ID not found`,
+          msg: `Not found`,
         });
       } else {
         res.status(204).send({ commment });
@@ -144,10 +143,38 @@ exports.deleteComment = (req, res, next) => {
 exports.getApi = (req, res, next) => {
   readEndpoints()
     .then((endpoints) => {
-      console.log(endpoints);
       const parsedEndpoints = JSON.parse(endpoints);
-      console.log(parsedEndpoints);
       res.status(200).send({ endpoints: parsedEndpoints });
+    })
+    .catch(next);
+};
+
+exports.getUserByUsername = (req, res, next) => {
+  selectUserByUsername(req.params.username)
+    .then((user) => {
+      if (user === undefined) {
+        return Promise.reject({
+          status: 404,
+          msg: `Not found`,
+        });
+      } else {
+      res.status(200).send({ user });
+      }
+    })
+    .catch(next);
+};
+
+exports.patchComment = (req, res, next) => {
+  updateComment(req.body, req.params.comment_id)
+    .then((comment) => {
+      if (comment === undefined) {
+        return Promise.reject({
+          status: 404,
+          msg: `Not found`,
+        });
+      } else {
+      res.status(200).send({ comment });
+      }
     })
     .catch(next);
 };
@@ -156,21 +183,6 @@ exports.postCategory = (req, res, next) => {
   insertCategory(req.body)
     .then((category) => {
       res.status(201).send({ category });
-    })
-    .catch(next);
-};
-
-exports.patchComment = (req, res, next) => {
-  updateComment(req.body, req.params.comment_id)
-    .then((comment) => {
-      res.status(200).send({ comment });
-    })
-    .catch(next);
-};
-exports.postCommentByReviewId = (req, res, next) => {
-  insertCommentByReviewId(req.body, req.params.review_id)
-    .then((comment) => {
-      res.status(201).send({ comment });
     })
     .catch(next);
 };
@@ -184,17 +196,17 @@ exports.postReview = (req, res, next) => {
 };
 
 exports.deleteReview = (req, res, next) => {
-  removeReview(req.params.review_id)
-    .then(() => {
+  const { review_id } = req.params;
+  removeReview(review_id)
+    .then((review) => {
+      if (review.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: `Not found`,
+        });
+      } else {
       res.status(204).send({});
-    })
-    .catch(next);
-};
-
-exports.getUserByUsername = (req, res, next) => {
-  selectUserByUsername(req.params.username)
-    .then((user) => {
-      res.status(200).send({ user });
+      }
     })
     .catch(next);
 };

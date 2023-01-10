@@ -85,7 +85,7 @@ describe("GET /api/reviews/:review_id", () => {
       .get("/api/reviews/55")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("ID not found");
+        expect(body.msg).toBe("Not found");
       });
   });
   test("status:400, responds with an error message when passed a bad review ID", () => {
@@ -125,7 +125,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
       .get("/api/reviews/678788/comments")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("ID not found");
+        expect(body.msg).toBe("Not found");
       });
   });
   test("status:400, responds with an error message when passed a bad review ID", () => {
@@ -145,7 +145,6 @@ describe("GET /api/users", () => {
       .then(({ body }) => {
         const { users } = body;
         expect(users).toHaveLength(4);
-
         users.forEach((user) => {
           expect(user).toEqual(
             expect.objectContaining({
@@ -289,7 +288,7 @@ describe("PATCH /api/reviews/:review_id", () => {
       .send(input)
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("ID not found");
+        expect(body.msg).toBe("Not found");
       });
   });
   test("status:400, responds with an error message when passed a bad review ID", () => {
@@ -529,7 +528,7 @@ describe("GET /api/reviews/:review_id (comment count)", () => {
       .get("/api/reviews/55")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("ID not found");
+        expect(body.msg).toBe("Not found");
       });
   });
   test("status:400, responds with an error message when passed a bad review ID", () => {
@@ -552,7 +551,7 @@ describe("DELETE /api/comments/:comment_id", () => {
       .delete("/api/comments/2000000")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("ID not found");
+        expect(body.msg).toBe("Not found");
       });
   });
   test("status:400, responds with an error message when passed a bad comment_id", () => {
@@ -578,4 +577,62 @@ describe("GET /api", () => {
         );
       });
   });
+});
+describe("GET /api/users/:username", () => {
+  test("returns a user oject with properties of username, avatar_url and name", () => {
+    return request(app)
+      .get("/api/users/mallionaire")
+      .expect(200)
+      .then(({ body }) => {
+        const { user } = body;
+        expect(user).toEqual(
+          expect.objectContaining({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          })
+        );
+      });
+  });
+  test("status:404, responds with an error message when passed a username that doesnt exist", () => {
+    return request(app)
+      .get("/api/reviews/55")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+});
+describe("GET /api/users/:username", () => {
+  test("returns a user oject with properties of username, avatar_url and name", () => {
+    return request(app)
+      .get("/api/users/mallionaire")
+      .expect(200)
+      .then(({ body }) => {
+        const { user } = body;
+        expect(user).toEqual(
+          expect.objectContaining({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          })
+        );
+      });
+  });
+  test("status:404, responds with an error message when passed a username that doesnt exist", () => {
+    return request(app)
+      .get("/api/reviews/55")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+  // test("status:400, responds with an error message when passed a bad review ID", () => {
+  //   return request(app)
+  //     .get("/api/reviews/gggg")
+  //     .expect(400)
+  //     .then(({ body }) => {
+  //       expect(body.msg).toBe("Bad Request");
+  //     });
+  // });
 });
