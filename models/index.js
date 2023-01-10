@@ -88,24 +88,6 @@ exports.selectUserByUsername = async (username) => {
   return user;
 };
 
-exports.updateComment = async (patchData, commentId) => {
-  const { inc_votes, body } = patchData;
-  let edited;
-  if (body) {
-    edited = true;
-  }
-  const { rows: [comment] } = await db
-    .query(
-      `UPDATE comments SET 
-      votes = votes + COALESCE($1, 0),
-      edited = CASE WHEN body <> $2 THEN COALESCE(edited, $3) ELSE edited END,
-      body = CASE WHEN body <> $2 THEN COALESCE($2, body) ELSE body END
-      WHERE comment_id = $4
-      RETURNING *`,
-      [inc_votes, body, edited, commentId]
-    );
-  return comment;
-};
 
 exports.insertReview = async (newReview) => {
   const newReviewData = [
@@ -114,10 +96,11 @@ exports.insertReview = async (newReview) => {
     newReview.review_body,
     newReview.designer,
     newReview.category,
+    newReview.review_img_url
   ];
   const { rows: [review] } = await db
     .query(
-      "INSERT INTO reviews (owner, title, review_body, designer, category) VALUES ($1, $2, $3, $4, $5) RETURNING *, 0 AS comment_count",
+      "INSERT INTO reviews (owner, title, review_body, designer, category, review_img_url) VALUES ($1, $2, $3, $4, $5,$6) RETURNING *, 0 AS comment_count",
       newReviewData
     );
   return review;
@@ -133,32 +116,4 @@ exports.insertCategory = async (newCategory) => {
   return insertedCategory;
 };
 
-exports.removeReview = async (review_id) => {
 
-  const result = db.query("DELETE FROM reviews WHERE review_id = $1 RETURNING *", [review_id]);
-  return result.rows
-};
-
-
-
-
-
-
-exports.checkValueExists = (table, column, value) => {
-  let sqlString;
-  if (typeof value === "number") {
-    sqlString = format("SELECT * FROM %I WHERE %I = %L", table, column, value);
-  } else if (typeof value === "string") {
-    sqlString = format(
-      "SELECT * FROM %I WHERE %I ILIKE %L",
-      table,
-      column,
-      value
-    );
-  }
-  return db.query(sqlString).then(({ rows: values }) => {
-    if (!values.length) {
-      return Promise.reject({ status: 404, msg: "not found" });
-    }
-  });
-};

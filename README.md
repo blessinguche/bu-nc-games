@@ -1,6 +1,12 @@
 # Northcoders House of Games API
 
+## Hosted API Link
+
+https://blessing-games.onrender.com/api
+
 ## Cloning repo
+
+Cloning rep Instructions: https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository
 
 After cloning this repo, you'll need to `npm install dotenv` and  `mkdir env`.
 

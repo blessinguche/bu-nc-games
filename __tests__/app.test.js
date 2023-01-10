@@ -603,36 +603,89 @@ describe("GET /api/users/:username", () => {
       });
   });
 });
-describe("GET /api/users/:username", () => {
-  test("returns a user oject with properties of username, avatar_url and name", () => {
+
+describe("POST /api/categories", () => {
+  test("returns poseted comment", () => {
+    const newCategory = {
+      slug: "survival",
+      description: "SSurvival of the fitess",
+    };
     return request(app)
-      .get("/api/users/mallionaire")
-      .expect(200)
+      .post("/api/categories")
+      .send(newCategory)
+      .expect(201)
       .then(({ body }) => {
-        const { user } = body;
-        expect(user).toEqual(
+        const { category } = body;
+        expect(category).toEqual(
           expect.objectContaining({
-            username: expect.any(String),
-            name: expect.any(String),
-            avatar_url: expect.any(String),
+            slug: expect.any(String),
+            description: expect.any(String),
           })
         );
       });
   });
-  test("status:404, responds with an error message when passed a username that doesnt exist", () => {
+  test("status:400, responds with an error message when missing or having wrong properties in body", () => {
+    const newCategory = {
+      userame: "philippaclaire9",
+      body: "cool game 10/10",
+    };
     return request(app)
-      .get("/api/reviews/55")
-      .expect(404)
+      .post("/api/categories")
+      .send(newCategory)
+      .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Not found");
+        expect(body.msg).toBe("Bad Request");
       });
   });
-  // test("status:400, responds with an error message when passed a bad review ID", () => {
-  //   return request(app)
-  //     .get("/api/reviews/gggg")
-  //     .expect(400)
-  //     .then(({ body }) => {
-  //       expect(body.msg).toBe("Bad Request");
-  //     });
-  // });
+});
+
+describe("POST /api/reviews", () => {
+  test("returns poseted comment", () => {
+    const newReview = {
+      title: "Karma Karma Chameleon",
+      category: "dexterity",
+      designer: "Kyouko Honda",
+      owner: "mallionaire",
+      review_body: "I love Kyo Sohmach",
+      review_img_url:
+        "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+    };
+    return request(app)
+      .post("/api/reviews")
+      .send(newReview)
+      .expect(201)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review).toEqual(
+          expect.objectContaining({
+            comment_count: expect.any(Number),
+            title: "Karma Karma Chameleon",
+            designer: "Kyouko Honda",
+            owner: "mallionaire",
+            review_body: "I love Kyo Sohmach",
+            review_img_url:
+              "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+            category: "dexterity",
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            review_id: expect.any(Number),
+          })
+        );
+      });
+  });
+
+  test("status:400, responds with an error message when missing or having wrong properties in body", () => {
+    const newComment = {
+      designer: "Kyouko Honda",
+      owner: "mallionaire",
+      review_body: "I love Kyo Sohmach",
+    };
+    return request(app)
+      .post("/api/reviews")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
 });

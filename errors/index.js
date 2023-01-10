@@ -1,4 +1,4 @@
-const errCodes = ["22P02", "23502", "23503", "42703", "42601"];
+const errCodes = ["22P02", "23502", "23503", "42703", "42601", "23505"];
 
 const handle404Paths = (req, res, next) => {
   res.status(404).send({ msg: "Bad path" });

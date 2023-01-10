@@ -9,9 +9,7 @@ const {
   removeComment,
   readEndpoints,
   insertCategory,
-  updateComment,
   insertReview,
-  removeReview,
   selectUserByUsername,
 } = require("../models");
 
@@ -164,21 +162,6 @@ exports.getUserByUsername = (req, res, next) => {
     .catch(next);
 };
 
-exports.patchComment = (req, res, next) => {
-  updateComment(req.body, req.params.comment_id)
-    .then((comment) => {
-      if (comment === undefined) {
-        return Promise.reject({
-          status: 404,
-          msg: `Not found`,
-        });
-      } else {
-      res.status(200).send({ comment });
-      }
-    })
-    .catch(next);
-};
-
 exports.postCategory = (req, res, next) => {
   insertCategory(req.body)
     .then((category) => {
@@ -195,18 +178,3 @@ exports.postReview = (req, res, next) => {
     .catch(next);
 };
 
-exports.deleteReview = (req, res, next) => {
-  const { review_id } = req.params;
-  removeReview(review_id)
-    .then((review) => {
-      if (review.length === 0) {
-        return Promise.reject({
-          status: 404,
-          msg: `Not found`,
-        });
-      } else {
-      res.status(204).send({});
-      }
-    })
-    .catch(next);
-};
