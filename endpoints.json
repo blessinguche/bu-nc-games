@@ -128,21 +128,6 @@
       }
     }
   },
-  "PATCH /api/comments/:comment_id": {
-    "description": "updates a comment and serves the updated comment",
-    "requiredFields": ["inc_votes"],
-    "exampleRequest": { "inc_votes": -50 },
-    "exampleResponse": {
-      "comment": {
-        "comment_id": 2,
-        "body": "My dog loved this game too!",
-        "review_id": 4,
-        "author": "tickle122",
-        "votes": -47,
-        "created_at": "2021-01-18T10:09:05.410Z"
-      }
-    }
-  },
   "POST /api/reviews": {
     "description": "adds a new review, and serves the comment",
     "requiredFields": ["owner", "title", "review_body", "designer", "category", "review_img_url"],
